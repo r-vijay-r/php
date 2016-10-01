@@ -129,7 +129,6 @@ function Alert(dialog){
 		document.getElementById('dialogoverlay').style.display = "none";
 		document.getElementById(Id).focus();
 	}
-
 </script>
 <?php 
 if(isset($_POST["buy"])){
