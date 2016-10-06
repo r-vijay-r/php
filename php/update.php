@@ -63,9 +63,16 @@ td.td{
 <div class="logout">
 <?php
 	session_start();
-	if(!isset($_GET["eid"])){header('Location:admin.php');}
-	if(!isset($_SESSION["admin_id"])){header('Location:std_reg_login.php');}
 	$conn = new mysqli("localhost", "root","" , "vijay");
+	if(!isset($_GET["eid"]) && !isset($_GET["did"])){header('Location:admin.php');}
+	if(isset($_GET["did"])){
+		$qry='DELETE FROM `questions` WHERE `questions`.`qid` = '.$_GET["did"].';';
+		if($result=$conn->query($qry)){
+			echo "success!";
+			header('Location:admin.php');
+		}
+	}
+	if(!isset($_SESSION["admin_id"])){header('Location:std_reg_login.php');}
 	$qry='select name from stdexamdet where id="'.$_SESSION["admin_id"].'";';
 	$result=$conn->query($qry);
 	if($result->num_rows>0){
@@ -82,17 +89,18 @@ td.td{
 </div>
 <div class="container">
 <?php 
+if(isset($_GET["eid"])){
 	$qry='select * from questions where qid="'.$_GET["eid"].'";';
 	$result=$conn->query($qry);
 	if($result->num_rows>0){
 		$row=$result->fetch_assoc();
 	}
-
+}
 ?>
 <fieldset>
 <legend>Edit Questions</legend>
 <form action="update.php" method="POST">
-<input type="text" name="id" value='<?php echo $row["qid"]; ?>' readonly hidden>
+<input type="text" name="qid" value='<?php echo $row["qid"]; ?>' readonly hidden>
 <table>
 <tr><td>Level </td><td><select name="level" id="level" class="txt">
 							<option value="beginer" <?php if(isset($row["level"])){if($row["level"]=="beginer"){echo "selected";}}  ?> >Beginer</option>
@@ -140,10 +148,10 @@ td.td{
 <?php
 	$conn = new mysqli("localhost", "root","" , "vijay");
 	if(isset($_POST["update"]) && $_POST["question"]!="" && $_POST["ans"]!=""){
-		$qry='UPDATE  `vijay`.`questions` SET  `question` =  'Lion is the king of :',`op1` =  'House ',`op2` =  'Forest ',`op3` =  'Dogs ',`op4` =  'Hens ',`answer` =  'Forest ',`mark` =  '11',`level` =  'beginer' WHERE  `questions`.`qid` =3 VALUES ("'.$_POST["question"].'", "'.$_POST["op1"].'", "'.$_POST["op2"].'", "'.$_POST["op3"].'", "'.$_POST["op4"].'", "'.$_POST["ans"].'", '.$_POST["mark"].', "'.$_POST["level"].'");';
+		$qry='UPDATE  `vijay`.`questions` SET  `question` =  "'.$_POST["question"].'",`op1` =  "'.$_POST["op1"].'",`op2` =  "'.$_POST["op2"].'",`op3` =  "'.$_POST["op3"].'",`op4` =  "'.$_POST["op4"].'",`answer` =  "'.$_POST["ans"].'",`mark` =  '.$_POST["mark"].',`level` =  "'.$_POST["level"].'" WHERE  `questions`.`qid` ='.$_POST["qid"].';';
 		if($result=$conn->query($qry)){
-			echo '<script>alert("Added successful...!");</script>';
-		}else{ echo '<script>alert("Added successful...!");</script>';}
+			echo '<script>alert("updated successful...!");window.location.assign("admin.php");</script>';
+		}else{ echo '<script>alert("Error...!");</script>';}
 	}
 	$conn->close();	
 ?>

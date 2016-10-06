@@ -70,12 +70,34 @@ button:hover {
 <a href="exam.php?e=1"><button class="exit" ><b>!</b></button>Logout</a>
 </div>
 <div class="container">
-<fieldset>
+<fieldset id="changer">
 <legend>Exam Types</legend>
-<div class="selector"><button><b>Beginer</b></button></div>
-<div class="selector"><button><b>Medium</b></button></div>
-<div class="selector"><button><b>Expert</b></button></div>
+<div class="selector"><button onclick='exam("beginer")'><b>Beginer</b></button></div>
+<div class="selector"><button onclick='exam("medium")'><b>Medium</b></button></div>
+<div class="selector"><button onclick='exam("expert")'><b>Expert</b></button></div>
 </fieldset>
 <div>
+<script>
+function exam(level){
+	if (window.XMLHttpRequest) {
+	// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp = new XMLHttpRequest();
+	} else {
+	// code for IE6, IE5
+		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			document.getElementById("changer").innerHTML = this.responseText;
+		}
+	};
+	xmlhttp.open("GET","runexam.php?level="+level,true);
+	xmlhttp.send();
+}
+function ans(i,val){
+	var answ="ans"+i;
+	document.getElementByID(answ).value=val;
+}
+</script>
 </body>
 </html>

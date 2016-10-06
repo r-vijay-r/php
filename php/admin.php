@@ -8,10 +8,10 @@ body{
 }
 fieldset{ border-radius:10px; background-color:#f2f2f2;}
 .container{
-	margin:25%;
+	margin:30%;
 	margin-top:10%;
 	margin-bottom:0%;
-	width:50%;
+	width:30%;
 }
 .selector{
 	float:left;
@@ -50,6 +50,9 @@ button:hover {
 .table{
 	background-color:black;
 	border-radius:10px 10px 0px 0px;
+	margin:25%;
+	margin-top:5%;
+	margin-bottom:0px;
 }
 th{
 	background-color:orange;
@@ -103,7 +106,7 @@ td.td{
 
 </form>
 </fieldset>
-<div>
+</div>
 <script>
 	function get(){
 		var op1=document.getElementById("op1").value;
