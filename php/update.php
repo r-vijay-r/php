@@ -63,6 +63,7 @@ td.td{
 <div class="logout">
 <?php
 	session_start();
+	if(!isset($_GET["eid"])){header('Location:admin.php');}
 	if(!isset($_SESSION["admin_id"])){header('Location:std_reg_login.php');}
 	$conn = new mysqli("localhost", "root","" , "vijay");
 	$qry='select name from stdexamdet where id="'.$_SESSION["admin_id"].'";';
@@ -80,25 +81,34 @@ td.td{
 <a href="exam.php?e=1"><button class="exit" ><b>!</b></button>Logout</a>
 </div>
 <div class="container">
+<?php 
+	$qry='select * from questions where qid="'.$_GET["eid"].'";';
+	$result=$conn->query($qry);
+	if($result->num_rows>0){
+		$row=$result->fetch_assoc();
+	}
+
+?>
 <fieldset>
-<legend>Add Questions</legend>
-<form action="admin.php" method="POST">
+<legend>Edit Questions</legend>
+<form action="update.php" method="POST">
+<input type="text" name="id" value='<?php echo $row["qid"]; ?>' readonly hidden>
 <table>
 <tr><td>Level </td><td><select name="level" id="level" class="txt">
-							<option value="beginer" <?php if(isset($_POST["level"])){if($_POST["level"]=="beginer"){echo "selected";}}  ?> >Beginer</option>
-							<option value="medium" <?php if(isset($_POST["level"])){if($_POST["level"]=="medium"){echo "selected";}}  ?> >Medium</option>
-							<option value="expert" <?php if(isset($_POST["level"])){if($_POST["level"]=="expert"){echo "selected";}}  ?> >Expert</option>
+							<option value="beginer" <?php if(isset($row["level"])){if($row["level"]=="beginer"){echo "selected";}}  ?> >Beginer</option>
+							<option value="medium" <?php if(isset($row["level"])){if($row["level"]=="medium"){echo "selected";}}  ?> >Medium</option>
+							<option value="expert" <?php if(isset($row["level"])){if($row["level"]=="expert"){echo "selected";}}  ?> >Expert</option>
 						</select> </td></tr>
-<tr><td>Question</td><td> <input type="text" name="question" placeholder="Question" class="txt"></td></tr>
-<tr><td>Option 1</td><td> <input type="text" name="op1" id="op1" placeholder="Option 1" class="txt"></td></tr>
-<tr><td>Option 2</td><td> <input type="text" name="op2" id="op2" placeholder="Option 2" class="txt"></td></tr>
-<tr><td>Option 3</td><td> <input type="text" name="op3" id="op3" placeholder="Option 3" class="txt"></td></tr>
-<tr><td>Option 4</td><td> <input type="text" name="op4" id="op4" placeholder="Option 4" class="txt"></td></tr>
+<tr><td>Question</td><td> <input type="text" name="question" placeholder="Question" class="txt" value="<?php echo $row["question"]; ?>"></td></tr>
+<tr><td>Option 1</td><td> <input type="text" name="op1" id="op1" placeholder="Option 1" class="txt"  value="<?php echo $row["op1"]; ?>"></td></tr>
+<tr><td>Option 2</td><td> <input type="text" name="op2" id="op2" placeholder="Option 2" class="txt" value="<?php echo $row["op2"]; ?>"></td></tr>
+<tr><td>Option 3</td><td> <input type="text" name="op3" id="op3" placeholder="Option 3" class="txt" value="<?php echo $row["op3"]; ?>"></td></tr>
+<tr><td>Option 4</td><td> <input type="text" name="op4" id="op4" placeholder="Option 4" class="txt" value="<?php echo $row["op4"]; ?>"></td></tr>
 <tr><td>Answer</td><td> <select name="ans" id="ans" class="txt" onfocus="get()">
 							<option value="">--select--</option>
 						</select></td></tr>
-<tr><td>Mark</td><td> <input type="text" name="mark" id="mark" placeholder="Mark" class="txt"></td></tr>
-<tr><td></td><td><input type="Submit" name="add" value="Add" style="margin-left:5%;"></td></tr>
+<tr><td>Mark</td><td> <input type="text" name="mark" id="mark" placeholder="Mark" class="txt" value="<?php echo $row["mark"]; ?>"></td></tr>
+<tr><td></td><td><input type="Submit" name="update" value="Update" style="margin-left:5%;"></td></tr>
 </table>
 
 </form>
@@ -129,22 +139,12 @@ td.td{
 </script>
 <?php
 	$conn = new mysqli("localhost", "root","" , "vijay");
-	if(isset($_POST["add"]) && $_POST["question"]!="" && $_POST["ans"]!=""){
-		$qry='INSERT INTO `questions` (`question`, `op1`, `op2`, `op3`, `op4`, `answer`, `mark`, `level`) VALUES ("'.$_POST["question"].'", "'.$_POST["op1"].'", "'.$_POST["op2"].'", "'.$_POST["op3"].'", "'.$_POST["op4"].'", "'.$_POST["ans"].'", '.$_POST["mark"].', "'.$_POST["level"].'");';
+	if(isset($_POST["update"]) && $_POST["question"]!="" && $_POST["ans"]!=""){
+		$qry='UPDATE  `vijay`.`questions` SET  `question` =  'Lion is the king of :',`op1` =  'House ',`op2` =  'Forest ',`op3` =  'Dogs ',`op4` =  'Hens ',`answer` =  'Forest ',`mark` =  '11',`level` =  'beginer' WHERE  `questions`.`qid` =3 VALUES ("'.$_POST["question"].'", "'.$_POST["op1"].'", "'.$_POST["op2"].'", "'.$_POST["op3"].'", "'.$_POST["op4"].'", "'.$_POST["ans"].'", '.$_POST["mark"].', "'.$_POST["level"].'");';
 		if($result=$conn->query($qry)){
 			echo '<script>alert("Added successful...!");</script>';
 		}else{ echo '<script>alert("Added successful...!");</script>';}
 	}
-	$qry='SELECT * FROM `questions` ORDER BY `level`;';
-	$result=$conn->query($qry);
-	if($result->num_rows > 0){
-		echo '<table class="table">';
-		echo '<tr><th style="border-radius:10px 0px 0px 0px;">Question</th><th>Options</th><th>Answer</th><th>Mark</th><th>Level</th><th style="border-radius:0px 10px 0px 0px;">Edit</th></tr>';
-		while($row=$result->fetch_assoc()){
-		echo '<tr><td class="td">'.$row["question"].'</td><td class="td">'.$row["op1"].', '.$row["op2"].', '.$row["op3"].', '.$row["op4"].'</td><td class="td">'.$row["answer"].'</td><td class="td">'.$row["mark"].'</td><td class="td">'.$row["level"].'</td><td class="td"><a href="update.php?eid='.$row["qid"].'">Edit</a> <a href="update.php?did='.$row["qid"].'">Delete</a></td></tr>';
-		}
-		echo '</table>';
-	}else{echo "No questions added yet...";}
 	$conn->close();	
 ?>
 </body>
