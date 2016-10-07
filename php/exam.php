@@ -1,6 +1,27 @@
 <html>
 <head>
 <title>Exam</title>
+<script>
+var starttoday = new Date();
+var start = starttoday.getSeconds();
+function startTime() {
+    var today = new Date();
+    var s = today.getSeconds();
+    s = checkTime(s);
+	var sec=20+(start-s);
+    sec = checkTime(sec);
+    document.getElementById('txt').innerHTML =
+    "00" + ":" + "00" + ":" + sec;
+	if(sec==0){document.getElementById('txt').innerHTML ="Time Out !!";
+	document.getElementById("examform").submit();
+	return;}
+    var t = setTimeout(startTime, 500);
+}
+function checkTime(i) {
+    if (i < 10) {i = "0" + i};
+    return i;
+}
+</script>
 <style>
 legend{text-align:center; background-color:#e6e6e6 ; border-radius:5px;}
 body{
@@ -48,6 +69,7 @@ button:hover {
 	background-color:red;
 }
 </style>
+
 </head>
 <body>
 <div class="logout">
@@ -70,6 +92,7 @@ button:hover {
 <a href="exam.php?e=1"><button class="exit" ><b>!</b></button>Logout</a>
 </div>
 <div class="container">
+
 <fieldset id="changer">
 <legend>Exam Types</legend>
 <div class="selector"><button onclick='exam("beginer")'><b>Beginer</b></button></div>
@@ -89,6 +112,7 @@ function exam(level){
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			document.getElementById("changer").innerHTML = this.responseText;
+			startTime();
 		}
 	};
 	xmlhttp.open("GET","runexam.php?level="+level,true);

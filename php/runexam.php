@@ -1,19 +1,24 @@
-<?php
+<?php 
+if(isset($_GET["level"])){
+
+
+
+}
 session_start();
 $mark=0;
 $conn = new mysqli("localhost", "root","" , "vijay");
-if(isset($_POST["finished"])){
+if(isset($_GET["level1"])){
 	$i=1;
 	while($i<$_SESSION["i"]){
-		$qry='SELECT `answer`,`mark` FROM `questions` WHERE `qid`='.$_POST["id".$i].';';
+		$qry='SELECT `answer`,`mark` FROM `questions` WHERE `qid`='.$_GET["id".$i].';';
 		$result=$conn->query($qry);
 		$row=$result->fetch_assoc();
-		if($_POST["option".$i] == $row["answer"]){
+		if($_GET["option".$i] == $row["answer"]){
 			$mark=$mark+$row["mark"];
 		}
 		$i++;
 	}
-	$qry='UPDATE `stdexamdet` SET `'.$_POST["level"].'` = '.$mark.' WHERE `stdexamdet`.`id` = '.$_SESSION["student_id"].';';
+	$qry='UPDATE `stdexamdet` SET `'.$_GET["level1"].'` = '.$mark.' WHERE `stdexamdet`.`id` = '.$_SESSION["student_id"].';';
 	$result=$conn->query($qry);
 	header('Location:exam.php');
 	
@@ -24,11 +29,11 @@ if(isset($_GET["level"])){
 	$row=$result->fetch_assoc();
 	if($row[$_GET["level"]]==NULL){
 		echo "<legend>".ucfirst($_GET["level"])." Examination</legend>";
+		echo '<div id="txt"></div>';
 		$qry='SELECT `qid`, `question`,`op1`,`op2`,`op3`,`op4`,`mark` FROM `questions` WHERE `level`="'.$_GET["level"].'";';
 		$result=$conn->query($qry);
-		include 'test.php';
 		?>
-		<form action="runexam.php" method="POST">
+		<form action="runexam.php" id="examform">
 		<ol>
 		<?php
 		$_SESSION["i"]=1;
@@ -50,7 +55,7 @@ if(isset($_GET["level"])){
 		}
 		?>
 		</ol>
-		<input type="text" name="level" value="<?php echo $_GET["level"]; ?>" hidden readonly>
+		<input type="text" name="level1" value="<?php echo $_GET["level"]; ?>" hidden readonly>
 		<input type="submit" value="Finished" name="finished" style="margin-left:40%;">
 		</form>
 		<?php
