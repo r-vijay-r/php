@@ -1,27 +1,37 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<form action="test.php" id="examform">
+First name:<br>
+<input type="text" id="firstname" name="firstname">
+<br>
+<input type="submit">
+</form>
+<a href="test.php?distroy=destroy">destroy</a>
+<a href="test.php">refresh</a>
 <script>
-var starttoday = new Date();
-var start = starttoday.getSeconds();
-function startTime() {
-    var today = new Date();
-    var s = today.getSeconds();
-    s = checkTime(s);
-	var sec=20+(start-s);
-    sec = checkTime(sec);
-    document.getElementById('txt').innerHTML =
-    "00" + ":" + "00" + ":" + sec;
-	if(sec==0){document.getElementById('txt').innerHTML ="Time Out !!";
-	return;}
-    var t = setTimeout(startTime, 500);
-}
-function checkTime(i) {
-    if (i < 10) {i = "0" + i};
-    return i;
+window.onbeforeunload=function myFunction() {
+ //document.getElementById("examform").submit();
+ var qry="test.php?firstname="+document.getElementById("firstname").value;
+  myWindow = window.open(qry, "myWindow", "width=200, height=100"); 
+    return false;
+   // return document.getElementById("examform").submit();
 }
 </script>
-
-<body onload="startTime()">
-
-<div id="txt"></div>
+<?php 
+session_start();
+	echo $_SESSION["firstname"];
+if(isset($_GET["firstname"])){
+	$_SESSION["firstname"]=$_GET["firstname"];
+}
+if(isset($_GET["distroy"])){
+	session_destroy();
+}
+?>
+<p>Note that the form itself is not visible.</p>
+<p>Also note that the default width of a text field is 20 characters.</p>
 
 </body>
+</html>
 
