@@ -1,3 +1,6 @@
+<script>
+alert("working");
+</script>
 <?php 
 
 session_start();
