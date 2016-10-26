@@ -14,7 +14,6 @@
 </style>
 <?php 
 session_start();
-echo "shdsdjhsdjh".$_SESSION['id'];
 include_once('../controller/user.php');
 	if(!isset($_SESSION['id'])){
 ?>
@@ -135,7 +134,7 @@ include_once('../controller/user.php');
 	}else{
 		$currentUser=new User();
 		$currentUserFullName=$currentUser->getUserDetails($_SESSION['id']);
-		echo $currentUserDetails['fname']." ".$currentUserDetails['lname']."is logged in ";
+		echo $currentUserFullName['fname']." ".$currentUserFullName['lname']." is logged in ";
 		echo " <a href='login.php?logout=yes'><button>Logout</button></a>";
 	}
 	if(isset($_POST["login"])){
@@ -146,7 +145,7 @@ include_once('../controller/user.php');
 	}
 	if(isset($_POST["reg"])){
 		$newUser= new User();
-		$userReg = array("fName"=>$_POST['fName'], "lName"=>$_POST['lName'], "gender"=>$_POST['gender'], "city"=>$_POST['city'], "state"=>$_POST['state'], "country"=>$_POST['country'], "mob"=>$_POST['mob'], "email"=>$_POST['email'], "userName"=>$_POST['userName'], "passWord"=>$_POST['passWord']);
+		$userReg = array("fname"=>$_POST['fName'], "lname"=>$_POST['lName'], "gender"=>$_POST['gender'], "city"=>$_POST['city'], "state"=>$_POST['state'], "country"=>$_POST['country'], "mob"=>$_POST['mob'], "email"=>$_POST['email'], "uname"=>$_POST['userName'], "password"=>$_POST['passWord']);
 		if($newUser->addNewUser($userReg)){
 			echo "User added successfully";
 		}else{

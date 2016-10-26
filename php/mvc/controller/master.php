@@ -20,7 +20,6 @@
 				return true;
 			}else{
 				return false;
-				echo "<script>alert('master: ".$this->loginTable." "."uname=".$userName." and password=".$passWord.""." res :".$this->val."');</script>";
 			}
 		}
 		public function getUserId(){
@@ -30,9 +29,11 @@
 		public function userNotExist($uname){
 			$db1=new Database();
 			$db1->connect();
-			$where="uname='".$uname."'";
-			if($db1->select($this->loginTable,'id',null,$where)){
+			$sel="SELECT * from ".$this->loginTable." uname = '".$uname."'";
+			$db1->sql($sel);
+			if($db1->numRows() == 0){
 				return true;
+				echo "<script>alert('master userNotExist :  ".$db1->numRows()." ');</script>";
 			}else{
 				return false;
 			}
@@ -40,10 +41,15 @@
 		public function addLogin($detail){
 			$db2=new Database();
 			$db2->connect();
-			$where="uname='".$detail['']."'";
 			$db2->insert($this->loginTable,$detail);
-			if($db2->select($this->loginTable,'id',null,$where)){
-				$this->val = $db2->getResult();//ssssssssssssssssssssssssssssssssssssssssssssss
+			$sel="SELECT id FROM ".$this->loginTable." WHERE uname='".$detail['uname']."';";
+			if($db2->sql($sel)){
+				$res = $db2->getResult();
+				foreach ($res as $key => $value) {
+					foreach ($value as $k => $v) {
+						$this->val[$k] =$v;
+					}
+				}
 				return $this->val['id'];
 			}
 
@@ -52,7 +58,8 @@
 			$db3=new Database();
 			$db3->connect();
 			$insertArray=array("id"=>$addedUserId, "fname"=>$name['fName'], "lname"=>$name['lName'], "gender"=>$name['gender'], "city"=>$name['city'], "state"=>$name['state'], "country"=>$name['country'], "mob"=>$name['mob'], "email"=>$name['email'], "uname"=>$name['userName']);
-			if($db3->insert($this->regTable,$insertArray)){
+			$db3->insert($this->regTable,$insertArray)
+			if(){
 				return true;
 			}else{
 				return false;
@@ -63,25 +70,23 @@
 			$db4=new Database();
 			$db4->connect();
 			$rows="uname, password";
-			$where="id=".$id;
+			$where=" id=".$id;
 			$db4->select($this->loginTable,$rows,$where);
 			$loginTabDet=array();
 			$p=$db4->getResult();
-			foreach ($loginTabDet as $key => $value) {
+			foreach ($p as $key => $value) {
 				foreach ($value as $k => $v) {
 					$loginTabDet[$k]=$v;
 				}
 			}
-			$where="id=".$id;
-			$db4->select($this->regTable,'*',null,$where);
-			$regTabDet=array();
+			$db4->select($this->regTable,'*',$where);
 			$p=$db4->getResult();
-			foreach ($loginTabDet as $key => $value) {
+			foreach ($p as $key => $value) {
 				foreach ($value as $k => $v) {
-					$regTabDet[$k]=$v;
+					$loginTabDet[$k]=$v;
 				}
 			}
-			$fullDetails= array("fname"=>$regTabDet['fname'], "lname"=>$regTabDet['lname'], "gender"=>$regTabDet['gender'], "city"=>$regTabDet['city'], "state"=>$regTabDet['state'], "country"=>$regTabDet['country'], "mob"=>$regTabDet['mob'], "email"=>$regTabDet['email'], "uname"=>$regTabDet['uname'], "password"=>$regTabDet['password']);
+			$fullDetails= array("fname"=>$loginTabDet['fname'], "lname"=>$loginTabDet['lname'], "gender"=>$loginTabDet['gender'], "city"=>$loginTabDet['city'], "state"=>$loginTabDet['state'], "country"=>$loginTabDet['country'], "mob"=>$loginTabDet['mob'], "email"=>$loginTabDet['email'], "uname"=>$loginTabDet['uname'], "password"=>$loginTabDet['password']);
 			return $fullDetails;
 		}
 	}

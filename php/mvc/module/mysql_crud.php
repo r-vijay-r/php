@@ -103,6 +103,7 @@ class Database{
             if($query){
                 // If the query returns >= 1 assign the number of rows to numResults
                 $this->numResults = mysql_num_rows($query);
+        echo '<script>alert("mysql select : '.$this->numResults.'");</script>';
                 // Loop through the query results by the number of rows returned
                 for($i = 0; $i < $this->numResults; $i++){
                     $r = mysql_fetch_array($query);

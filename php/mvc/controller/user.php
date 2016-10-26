@@ -2,7 +2,6 @@
 	include_once('../controller/master.php');
 	class User{
 		public function setUser($uname,$password){
-			echo "<script>alert('user ".$uname.$password."');</script>";
 			$ms=new Master();
 			if($ms->login($uname,$password)){
 				$values=$ms->getUserId();
@@ -13,8 +12,12 @@
 		}
 		public function addNewUser($name){
 			$mas=new Master();
-			if($mas->userNotExist($name['userName'])){
-				$userRegLogin = array("uname"=>$name['userName'], "password"=>$name['passWord']);
+			//foreach ($name as $key => $value) {
+			//	echo "<script>alert('user addNewUser : key -> ".$key." value - >".$value."');</script>";
+			//}
+			if($mas->userNotExist($name['uname'])){
+				echo "<script>alert('user addNewUser : no user with username ".$name['uname']."');</script>";
+				$userRegLogin = array("uname"=>$name['uname'], "password"=>$name['password']);
 				$addedUserId=$mas->addLogin($userRegLogin);
 				$status=$mas->addUserDetails($name,$addedUserId);
 				return $status;
@@ -24,8 +27,8 @@
 		}
 		public function getUserDetails($id){
 			$mss=new Master();
-				$userDetails=$mss->userDetailFetched($id);
-				return $userDetails;
+			$userDetails=$mss->userDetailFetched($id);
+			return $userDetails;
 		}
 	}
 ?>
